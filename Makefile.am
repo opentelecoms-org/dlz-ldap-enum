@@ -1,0 +1,18 @@
+
+#DIST_SUBDIRS = 
+
+ACLOCAL_AMFLAGS = -I m4
+
+pkglib_LTLIBRARIES    = dlz_ldap_enum.la
+
+dlz_ldap_enum_la_SOURCES = dlz_ldap_driver.c
+dlz_ldap_enum_la_LDFLAGS = -module -avoid-version
+dlz_ldap_enum_la_LIBADD = -lldap
+
+#EXTRA_DIST = 
+
+#pkglibdir = $(libdir)/bind9
+
+#EXTRA_DIST = COPYING gpl-3.0.txt
+
+

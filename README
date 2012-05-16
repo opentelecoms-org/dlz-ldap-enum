@@ -1,0 +1,5 @@
+
+This is module (shared object) for bind9 based on the dlz_dlopen API
+
+It is built using autotools - see INSTALL for details
+
