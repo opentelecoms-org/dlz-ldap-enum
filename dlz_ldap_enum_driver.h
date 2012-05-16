@@ -33,13 +33,18 @@
  * USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef DLZ_LDAP_DRIVER_H
-#define DLZ_LDAP_DRIVER_H
+#ifndef DLZ_LDAP_ENUM_DRIVER_H
+#define DLZ_LDAP_ENUM_DRIVER_H
 
-isc_result_t
-dlz_ldap_init(void);
+#include <dns/dlz_dlopen.h>
 
-void
-dlz_ldap_clear(void);
+dlz_dlopen_version_t dlz_dlopen_version;
+dlz_dlopen_allowzonexfr_t dlz_dlopen_allowzonexfr;
+dlz_dlopen_allnodes_t dlz_dlopen_allnodes;
+dlz_dlopen_authority_t dlz_dlopen_authority;
+dlz_dlopen_findzonedb_t dlz_dlopen_findzonedb;
+dlz_dlopen_lookup_t dlz_dlopen_lookup;
+dlz_dlopen_create_t dlz_dlopen_create;
+dlz_dlopen_destroy_t dlz_dlopen_destroy;
 
 #endif

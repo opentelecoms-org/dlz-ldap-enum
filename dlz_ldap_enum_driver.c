@@ -50,8 +50,6 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef DLZ_LDAP
-
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
@@ -71,7 +69,7 @@
 #include <named/globals.h>
 
 #include <dlz/sdlz_helper.h>
-#include <dlz/dlz_ldap_driver.h>
+#include "dlz_ldap_enum_driver.h"
 
 /*
  * Need older API functions from ldap.h.
@@ -113,14 +111,6 @@ typedef struct {
 	int protocol;	/*%< LDAP communication protocol version */
 	char *hosts;	/*%< LDAP server hosts */
 } ldap_instance_t;
-
-/* forward references */
-
-static isc_result_t
-dlz_ldap_findzone(void *driverarg, void *dbdata, const char *name);
-
-static void
-dlz_ldap_destroy(void *driverarg, void *dbdata);
 
 /*
  * Private methods
@@ -868,18 +858,23 @@ ldap_get_results(const char *zone, const char *record,
 }
 
 /*
- * DLZ methods
+ * dlz_dlopen methods
  */
-static isc_result_t
-dlz_ldap_allowzonexfr(void *driverarg, void *dbdata, const char *name,
+
+int
+dlz_dlopen_version(unsigned int *flags)
+{
+	return DLZ_DLOPEN_VERSION;
+}
+
+isc_result_t
+dlz_dlopen_allowzonexfr(void *dbdata, const char *name,
 		      const char *client)
 {
 	isc_result_t result;
 
-	UNUSED(driverarg);
-
 	/* check to see if we are authoritative for the zone first */
-	result = dlz_ldap_findzone(driverarg, dbdata, name);
+	result = dlz_dlopen_findzonedb(dbdata, name);
 	if (result != ISC_R_SUCCESS) {
 		return (result);
 	}
@@ -889,38 +884,30 @@ dlz_ldap_allowzonexfr(void *driverarg, void *dbdata, const char *name,
 	return (result);
 }
 
-static isc_result_t
-dlz_ldap_allnodes(const char *zone, void *driverarg, void *dbdata,
+isc_result_t
+dlz_dlopen_allnodes(const char *zone, void *dbdata,
 		  dns_sdlzallnodes_t *allnodes)
 {
-	UNUSED(driverarg);
 	return (ldap_get_results(zone, NULL, NULL, ALLNODES, dbdata, allnodes));
 }
 
-static isc_result_t
-dlz_ldap_authority(const char *zone, void *driverarg, void *dbdata,
+isc_result_t
+dlz_dlopen_authority(const char *zone, void *dbdata,
 		   dns_sdlzlookup_t *lookup)
 {
-	UNUSED(driverarg);
 	return (ldap_get_results(zone, NULL, NULL, AUTHORITY, dbdata, lookup));
 }
 
-static isc_result_t
-dlz_ldap_findzone(void *driverarg, void *dbdata, const char *name) {
-	UNUSED(driverarg);
+isc_result_t
+dlz_dlopen_findzonedb(void *dbdata, const char *name) {
 	return (ldap_get_results(name, NULL, NULL, FINDZONE, dbdata, NULL));
 }
 
-static isc_result_t
-dlz_ldap_lookup(const char *zone, const char *name, void *driverarg,
-		void *dbdata, dns_sdlzlookup_t *lookup,
-		dns_clientinfomethods_t *methods, dns_clientinfo_t *clientinfo)
+isc_result_t
+dlz_dlopen_lookup(const char *zone, const char *name,
+		void *dbdata, dns_sdlzlookup_t *lookup)
 {
 	isc_result_t result;
-
-	UNUSED(driverarg);
-	UNUSED(methods);
-	UNUSED(clientinfo);
 
 	if (strcmp(name, "*") == 0)
 		result = ldap_get_results(zone, "~", NULL, LOOKUP,
@@ -932,9 +919,9 @@ dlz_ldap_lookup(const char *zone, const char *name, void *driverarg,
 }
 
 
-static isc_result_t
-dlz_ldap_create(const char *dlzname, unsigned int argc, char *argv[],
-		void *driverarg, void **dbdata)
+isc_result_t
+dlz_dlopen_create(const char *dlzname, unsigned int argc, char *argv[],
+		void **dbdata, ...)
 {
 	isc_result_t result;
 	ldap_instance_t *ldap_inst = NULL;
@@ -952,7 +939,6 @@ dlz_ldap_create(const char *dlzname, unsigned int argc, char *argv[],
 #endif /* ISC_PLATFORM_USETHREADS */
 
 	UNUSED(dlzname);
-	UNUSED(driverarg);
 
 #ifdef ISC_PLATFORM_USETHREADS
 	/* if debugging, let user know we are multithreaded. */
@@ -1246,8 +1232,7 @@ dlz_ldap_create(const char *dlzname, unsigned int argc, char *argv[],
 }
 
 void
-dlz_ldap_destroy(void *driverarg, void *dbdata) {
-	UNUSED(driverarg);
+dlz_dlopen_destroy(void *dbdata) {
 
 	if (dbdata != NULL) {
 #ifdef ISC_PLATFORM_USETHREADS
@@ -1280,14 +1265,14 @@ dlz_ldap_destroy(void *driverarg, void *dbdata) {
 	}
 }
 
-static dns_sdlzmethods_t dlz_ldap_methods = {
-	dlz_ldap_create,
-	dlz_ldap_destroy,
-	dlz_ldap_findzone,
-	dlz_ldap_lookup,
-	dlz_ldap_authority,
-	dlz_ldap_allnodes,
-	dlz_ldap_allowzonexfr,
+static dns_sdlzmethods_t dlz_ldap_enum_methods = {
+	dlz_dlopen_create,
+	dlz_dlopen_destroy,
+	dlz_dlopen_findzonedb,
+	dlz_dlopen_lookup,
+	dlz_dlopen_authority,
+	dlz_dlopen_allnodes,
+	dlz_dlopen_allowzonexfr,
 	NULL,
 	NULL,
 	NULL,
@@ -1311,7 +1296,7 @@ dlz_ldap_init(void) {
 		      DNS_LOGMODULE_DLZ, ISC_LOG_DEBUG(2),
 		      "Registering DLZ ldap driver.");
 
-	result = dns_sdlzregister("ldap", &dlz_ldap_methods, NULL,
+	result = dns_sdlzregister("ldap", &dlz_ldap_enum_methods, NULL,
 				  DNS_SDLZFLAG_RELATIVEOWNER |
 				  DNS_SDLZFLAG_RELATIVERDATA,
 				  ns_g_mctx, &dlz_ldap);
@@ -1341,4 +1326,3 @@ dlz_ldap_clear(void) {
 		dns_sdlzunregister(&dlz_ldap);
 }
 
-#endif

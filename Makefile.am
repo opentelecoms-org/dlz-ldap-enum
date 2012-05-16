@@ -5,9 +5,11 @@ ACLOCAL_AMFLAGS = -I m4
 
 pkglib_LTLIBRARIES    = dlz_ldap_enum.la
 
-dlz_ldap_enum_la_SOURCES = dlz_ldap_driver.c
+dlz_ldap_enum_la_SOURCES = dlz_ldap_enum_driver.c
 dlz_ldap_enum_la_LDFLAGS = -module -avoid-version
 dlz_ldap_enum_la_LIBADD = -lldap
+
+noinst_HEADERS = dlz_ldap_enum_driver.h
 
 #EXTRA_DIST = 
 
