@@ -1,5 +1,75 @@
 
 This is module (shared object) for bind9 based on the dlz_dlopen API
 
-It is built using autotools - see INSTALL for details
+It is built using autotools - see INSTALL for how to compile it.
+
+
+Integrating with bind:
+----------------------
+
+a) Install the binary:
+
+     make install
+
+   or manually install the binary:
+
+     cp dlz_ldap_enum.so /usr/lib/.....wherever..../
+
+b) Install the config file
+
+     cp dlz_ldap_enum.conf /etc/bind/
+
+   or to whichever directory you use for bind config files
+
+c) Modify your named.conf to include the new file, e.g. add the following:
+
+     include "/etc/bind/dlz_ldap_enum.conf";
+
+d) If required, create a user in LDAP that the bind process can use to
+   access the directory.
+
+e) Modify the settings in dlz_ldap_enum.conf to match your environment
+
+f) Delegate domain from your main zone to the sub-zone,
+
+   e.g. your main zone = example.org
+        your ENUM zone = e164-lookup.example.org
+
+    => in the zone file for example.org  (possibly called db.example.org),
+       insert the following:
+
+         e164-lookup   IN    NS   hostname-of-nameserver
+
+    where `hostname-of-nameserver' is the relative hostname of the
+    server where you run the dlz-ldap-enum module.
+
+g) Restart bind
+
+Setting up LDAP and testing
+---------------------------
+
+   Your LDAP server must typically contain entries with attributes
+   for telephone and email, e.g.:
+
+     dn: cn=Tester,dc=example,dc=org
+     objectClass: inetOrgPerson
+     cn: Tester
+     sn: Tests
+     mail: tester1@example.org
+     telephoneNumber: +44207135
+
+  Test with the `dig' command:
+
+    $ dig @localhost -t any 5.3.1.7.0.2.4.4.e164-rev.test 
+
+    ;; ANSWER SECTION:
+    5.3.1.7.0.2.4.4.e164-rev.test. 60 IN	NAPTR	100 10 "u" "E2U+sip" "!^\\+44207135$!sip:tester1@example.org!" .
+    5.3.1.7.0.2.4.4.e164-rev.test. 60 IN	NAPTR	100 10 "u" "E2U+xmpp" "!^\\+44207135$!xmpp:tester1@example.org!" .
+
+   You can see what is happening by running the nameserver on the console
+   in debug mode:
+
+     # named -g -d 1
+
+   and then you will see all the LDAP queries issues by the server.
 
