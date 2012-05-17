@@ -14,7 +14,7 @@ noinst_HEADERS = dlz_ldap_enum_driver.h
 noinst_HEADERS += dlz_dlopen.h  
 noinst_HEADERS += sdlz_helper.h
 
-#EXTRA_DIST = 
+EXTRA_DIST = dlz_ldap_enum.conf
 
 #pkglibdir = $(libdir)/bind9
 
