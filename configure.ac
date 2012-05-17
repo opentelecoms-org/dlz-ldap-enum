@@ -15,7 +15,7 @@ dnl
 dnl    You should have received a copy of the GNU General Public License
 dnl    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT(dlz-ldap-enum,1.0.0)
+AC_INIT(dlz-ldap-enum,1.0.1)
 AC_CONFIG_SRCDIR(dlz_ldap_enum_driver.c)
 AM_INIT_AUTOMAKE
 
