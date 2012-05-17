@@ -36,7 +36,21 @@
 #ifndef DLZ_LDAP_ENUM_DRIVER_H
 #define DLZ_LDAP_ENUM_DRIVER_H
 
+#ifndef USE_COPIED_DLZ_DLOPEN_H
 #include <dns/dlz_dlopen.h>
+#else
+
+// These things are borrowed from the main bind sources,
+// this is meant to be installed as part of the public API,
+// but may not be available on all systems.
+#include "dlz_dlopen.h"
+// ---from named/globals.h---
+// this is used from the traditional dlz_ldap code, now
+// that we have dlz_dlopen, maybe the memory management
+// needs to be changed to use a memory pool local to the module
+extern isc_mem_t *              ns_g_mctx                ;
+
+#endif
 
 dlz_dlopen_version_t dlz_version;
 dlz_dlopen_allowzonexfr_t dlz_allowzonexfr;

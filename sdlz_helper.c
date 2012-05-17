@@ -60,7 +60,8 @@
 #include <isc/string.h>
 #include <isc/util.h>
 
-#include <dlz/sdlz_helper.h>
+//#include <dlz/sdlz_helper.h>
+#include "sdlz_helper.h"
 
 /*
  * sdlz helper methods

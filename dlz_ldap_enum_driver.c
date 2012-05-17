@@ -66,9 +66,10 @@
 #include <isc/string.h>
 #include <isc/util.h>
 
-#include <named/globals.h>
+//#include <named/globals.h>
 
-#include <dlz/sdlz_helper.h>
+//#include <dlz/sdlz_helper.h>
+#include "sdlz_helper.h"
 #include "dlz_ldap_enum_driver.h"
 
 /*
