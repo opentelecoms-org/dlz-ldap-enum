@@ -1,10 +1,10 @@
 dnl    dlz-ldap-enum: bind9 DLZ module for using an LDAP database to answer
 dnl                   ENUM queries over DNS
-dnl    Copyright (C) 2012 Daniel Pocock
+dnl    Copyright (C) 2012-2014 Daniel Pocock
 dnl
 dnl    Please see the COPYING file for license terms
 
-AC_INIT(dlz-ldap-enum,1.0.2)
+AC_INIT(dlz-ldap-enum,1.0.3)
 AC_CONFIG_SRCDIR(dlz_ldap_enum_driver.c)
 AM_INIT_AUTOMAKE
 
