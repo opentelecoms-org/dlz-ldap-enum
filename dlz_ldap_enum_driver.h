@@ -43,7 +43,7 @@
 // These things are borrowed from the main bind sources,
 // this is meant to be installed as part of the public API,
 // but may not be available on all systems.
-#include "dlz_dlopen.h"
+#include "bind98_dlz_dlopen.h"
 // ---from named/globals.h---
 // this is used from the traditional dlz_ldap code, now
 // that we have dlz_dlopen, maybe the memory management

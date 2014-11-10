@@ -11,7 +11,7 @@ dlz_ldap_enum_la_LDFLAGS = -module -avoid-version
 dlz_ldap_enum_la_LIBADD = -lldap
 
 noinst_HEADERS = dlz_ldap_enum_driver.h
-noinst_HEADERS += dlz_dlopen.h  
+noinst_HEADERS += bind98_dlz_dlopen.h
 noinst_HEADERS += sdlz_helper.h
 
 EXTRA_DIST = dlz_ldap_enum.conf
