@@ -40,6 +40,9 @@
 #include <dns/dlz_dlopen.h>
 #else
 
+#ifdef BIND_9_9
+#error The bundled copy of dlz_dlopen.h only works with bind9 9.8.x, bind9 up to 9.9.5 does not install dlz_dlopen.h under /usr/include but 9.9.6 or later does.
+#endif
 // These things are borrowed from the main bind sources,
 // this is meant to be installed as part of the public API,
 // but may not be available on all systems.

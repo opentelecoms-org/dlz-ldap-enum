@@ -117,6 +117,10 @@ typedef struct {
 	int default_ttl;
 } ldap_instance_t;
 
+#ifdef BIND_9_9
+isc_mem_t *ns_g_mctx = NULL;
+#endif
+
 /*
  * Private methods
  */
@@ -998,8 +1002,15 @@ dlz_findzonedb(void *dbdata, const char *name) {
 }
 
 isc_result_t
+#ifndef BIND_9_9
 dlz_lookup(const char *zone, const char *name,
 		void *dbdata, dns_sdlzlookup_t *lookup)
+#else
+dlz_lookup(const char *zone, const char *name,
+                void *dbdata, dns_sdlzlookup_t *lookup,
+                dns_clientinfomethods_t *methods,
+                dns_clientinfo_t *clientinfo)
+#endif
 {
 	isc_result_t result;
 
@@ -1022,6 +1033,14 @@ dlz_create(const char *dlzname, unsigned int argc, char *argv[],
 	dbinstance_t *dbi = NULL;
 	int protocol;
 	int method;
+
+	result = isc_mem_create(0, 0, &ns_g_mctx);
+	if (result != ISC_R_SUCCESS) {
+		isc_log_write(dns_lctx, DNS_LOGCATEGORY_DATABASE,
+			DNS_LOGMODULE_DLZ, ISC_LOG_ERROR,
+			"Memory init failed");
+		return (result);
+	}
 
 #ifdef ISC_PLATFORM_USETHREADS
 	/* if multi-threaded, we need a few extra variables. */

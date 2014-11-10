@@ -19,6 +19,11 @@ AC_PROG_INSTALL
 
 AC_PROG_LIBTOOL
 
+AC_ARG_ENABLE(bind99,
+[  --enable-bind99         Enable building for bind9 9.9.x and later],
+   [AC_DEFINE([BIND_9_9], , [Indicates we are compiling for bind9 9.9 or later])],
+   [])
+
 AC_OUTPUT(Makefile)
 
 
