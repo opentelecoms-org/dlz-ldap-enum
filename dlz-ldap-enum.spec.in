@@ -1,0 +1,46 @@
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 1%{?dist}
+Summary: bind9 DLZ plugin for handling ENUM queries
+License: BSD
+URL: http://www.opentelecoms.org/dlz-ldap-enum
+Source0: https://github.com/opentelecoms-org/dlz-ldap-enum/archive/%version.tar.gz
+
+BuildRequires: libtool
+BuildRequires: automake
+BuildRequires: autoconf
+BuildRequires: bind-devel
+BuildRequires: openldap-devel
+Requires: bind
+
+%description
+New versions of bind9 provide a dynamically loaded module interface
+dubbed dlz_dlopen. This module is linked to bind9 at runtime using
+dlz_dlopen. The module accepts ENUM query strings and consults
+the LDAP database to map the phone number to an email address.
+It then returns NAPTR records providing SIP and Jabber/XMPP routes
+based on the email address in LDAP.
+
+%prep
+%setup -q
+
+%build
+%configure --enable-bind99 CPPFLAGS=-I/usr/include/bind9
+make %{?_smp_mflags}
+
+%install
+make install DESTDIR=%{buildroot}
+mkdir -p %{buildroot}/etc/named
+cp -r dlz_ldap_enum.conf %{buildroot}/etc/named
+rm -rf %{buildroot}/%{_libdir}/%{name}/dlz_ldap_enum.*a
+
+%files
+%doc COPYING
+%doc README
+%{_libdir}/%{name}/dlz_ldap_enum.so
+/etc/named/dlz_ldap_enum.conf
+
+%changelog
+* Tue Nov 11 2014 Daniel Pocock <daniel@pocock.pro> - 1.0.4-1
+- Initial packaging.
+

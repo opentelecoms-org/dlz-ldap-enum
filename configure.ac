@@ -24,6 +24,8 @@ AC_ARG_ENABLE(bind99,
    [AC_DEFINE([BIND_9_9], , [Indicates we are compiling for bind9 9.9 or later])],
    [])
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile
+	dlz-ldap-enum.spec
+	)
 
 

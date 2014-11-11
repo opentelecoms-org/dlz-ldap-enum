@@ -1,5 +1,5 @@
 
-This is module (shared object) for bind9 based on the dlz_dlopen API
+This is a module (shared object) for bind9 based on the dlz_dlopen API
 
 It is built using autotools - see INSTALL for how to compile it.
 
@@ -7,7 +7,12 @@ It is built using autotools - see INSTALL for how to compile it.
 Integrating with bind:
 ----------------------
 
-a) Install the binary:
+a) Install the binary using the dlz-ldap-enum package:
+
+     # apt-get install dlz-ldap-enum       (Debian, Ubuntu)
+     # yum install dlz-ldap-enum           (Fedora, RHEL, CentOS)
+
+   or if you built it from source:
 
      make install
 
@@ -17,13 +22,19 @@ a) Install the binary:
 
 b) Install the config file
 
-     cp dlz_ldap_enum.conf /etc/bind/
+     cp dlz_ldap_enum.conf /etc/bind/      (Debian, Ubuntu)
 
-   or to whichever directory you use for bind config files
+     cp dlz_ldap_enum.conf /etc/named/     (Fedora, RHEL, CentOS)
+
+   or to whichever directory you use for bind config files.
 
 c) Modify your named.conf to include the new file, e.g. add the following:
 
-     include "/etc/bind/dlz_ldap_enum.conf";
+     include "/etc/bind/dlz_ldap_enum.conf";      (Debian, Ubuntu)
+
+   or
+
+     include "/etc/named/dlz_ldap_enum.conf";     (Fedora, RHEL, CentOS)
 
 d) If required, create a user in LDAP that the bind process can use to
    access the directory.

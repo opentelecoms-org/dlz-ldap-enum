@@ -16,6 +16,8 @@ noinst_HEADERS += sdlz_helper.h
 
 EXTRA_DIST = dlz_ldap_enum.conf
 
+EXTRA_DIST += dlz-ldap-enum.spec
+
 #pkglibdir = $(libdir)/bind9
 
 #EXTRA_DIST = COPYING gpl-3.0.txt
